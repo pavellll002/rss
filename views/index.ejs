@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Rss</title>
+</head>
+<body>
+	<div id="titles">
+	<%for(elem of firstNews){%>
+		<p><%=elem.title%></p>
+	<%}%>
+	</div>
+	
+	<div id="pagination">
+		<a href="#" id="prev">1</a>
+		<a href="#" id="current">2</a>
+		<a href="#" id="next">3</a>
+	</div>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script>
+	//what we do if ajax was successfylly
+		let success = (res)=>{
+					let titles = JSON.parse(res)
+					let $titles = $('#titles')
+					//insert new titles
+					$titles.html('')
+					 console.log(titles)
+					titles.newNews.forEach(title=>{
+						$titles.append(`<p>${title}</p>`)
+					})
+					//change pages
+					let page = titles.page
+					
+					if(page != 1){
+
+						let prev =  page-1
+						let next = parseInt(page,10)+1
+
+						$('#pagination').html(` 
+							<a href="#" id="prev">${prev}</a>
+							<a href="#" id="current">${page}</a>
+							<a href="#" id="next">${next}</a>
+						`)
+						$('#prev,#current,#next').click(ajax)
+					
+					}
+				}
+				//pagination
+		$('#prev,#current,#next').click(ajax)
+		//send data for searching new titles
+		function ajax(argument) {
+			
+			let numberPage = parseInt($(this).html(),10)
+			
+			$.ajax({
+				method:'get',
+				url:'news',
+				data:{
+					page: numberPage,
+				},
+				success:success
+			})
+
+
+		}
+	</script>
+</body>
+</html>
